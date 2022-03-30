@@ -1,0 +1,23 @@
+{% extends "products/base.html" %}
+{% block content %}
+{% load static %}
+<br><br><br><br><br>
+<center>
+<img class="form-img" src="{% static 'products/images/avatar.png' %}">
+<h2 class="dregistertitle">Delivery Details</h2>
+<form action="user"  method="post">
+    {% csrf_token %}
+    <input type="text" class="form-box" name="name" placeholder="Name"><br>
+    <input type="text" class="form-box" name="phone" placeholder="Phone"><br>
+    <input type="text" class="form-box" name="email" placeholder="Email"><br>
+    <input type="text" class="form-box" name="add1" placeholder="Address Line 1"><br>
+    <input type="text" class="form-box" name="add2" placeholder="Address Line 2"><br>
+    <input type="text" class="form-box" name="city" placeholder="City"><br>
+    <input type="text" class="form-box" name="state" placeholder="State"><br>
+    <input type="text" class="form-box" name="pincode" placeholder="Pincode"><br>
+    <input type="submit" class="general-btn" value="Continue">
+</form>
+</center>
+<br><br><br><br><br>
+
+{% endblock content %}

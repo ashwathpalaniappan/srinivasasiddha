@@ -1,0 +1,111 @@
+{% extends "products/base.html" %}
+{% block content %}
+<br><br><br><br><br>
+<center>
+<h1>#{{ id }} - Order Details</h1><br>
+<table>
+    <tr>
+        <th>Product Name</th>
+        <th>Quantity</th>
+        <th>Price</th>
+        <th style="text-align: right;">Total</th>
+      </tr>
+      {% for order_item in order_items %}
+      <tr>
+        <td>{{ order_item.product_name }}<br>
+            {{ order_item.company }}
+        </td>
+        <td>{{ order_item.qty }}</td>
+        <td>{{ order_item.price }}</td>
+        <td style='text-align: right;'>{{ order_item.total }}</td>
+      </tr>
+      {% endfor %}
+      <tr>
+        <td style='border: 0px;'></td>
+        <td style='border: 0px;'></td>
+        <td style='border: 0px; text-align: right; padding: 2px; padding-right: 8px'>Delivery Charges:</td>
+        <td style='border: 0px; text-align: right; padding: 2px; padding-right: 8px'>{{ delivery_charges }}</td>
+      </tr>
+      <tr>
+        <td style='border: 0px;'></td>
+        <td style='border: 0px;'></td>
+        <td style='border: 0px; text-align: right; padding: 2px; padding-right: 8px; font-weight: bold'>Subtotal:</td>
+        <td style='border: 0px; text-align: right; padding: 2px; padding-right: 8px; font-weight: bold'>{{ sub_total }}</td>
+      </tr>
+</table>
+<br><br>
+<h1>Customer Details</h1><br>
+<table>
+    <tr>
+        <td><b>Name</b></td>
+        <td>{{ name }}</td>
+    </tr>
+    <tr>
+        <td><b>Phone</b></td>
+        <td>{{ phone }}</td>
+    </tr>
+    <tr>
+        <td><b>Email</b></td>
+        <td>{{ email }}</td>
+    </tr>
+    <tr>
+        <td><b>Address</b></td>
+        <td>
+            {{ address.add1 }},<br>
+            {{ address.add2 }},<br>
+            {{ address.city }} - {{ address.pincode }},<br>
+            {{ address.state }}.
+        </td>
+    </tr>
+    <tr>
+        <td><b>Status</b></td>
+        <td>Amount Paid</td>
+    </tr>
+
+</table>
+<br><br>
+
+{% if completed == 0 %}
+    <form action="{{id}}"  method="post">
+        {% csrf_token %}
+        <input type="text" class="form-box" name="refno" placeholder="Reference number"><br>
+        <select name="courier" class="form-dropa-box">
+            <option value="Franch Express Courier">Franch Express Courier</option>
+            <option value="Professional Courier">Professional Courier</option>
+            <option value="self">Own Delivery</option>
+        </select><br>
+        <input class="general-btn" type="submit" value="Make Delivery">
+    </form>
+    <br><br>
+    <label><input type="checkbox" name="cancel_order" id="myCheck" onclick="cancelorder()">&nbsp;Cancel this order and provide refund</label><br>
+    <button id="cancel_work" class="general-btn" style="display: none;" onclick="call_cancel_order()">Cancel Order</button>
+    <button id="cancel_nwork" class="specific-btn"> Cancel Order </button><br>
+
+{% elif completed == 1 %}
+    <button class="specific-btn"> Order Delivered </button>
+
+{% else %}
+    <button class="specific-btn"> Order Cancelled </button>
+
+{% endif %}
+
+</center>
+<br><br><br>
+<script>
+function cancelorder() {
+    if(document.getElementById("myCheck").checked){
+    document.getElementById("cancel_work").style.display = "block"
+    document.getElementById("cancel_nwork").style.display = "none"
+}
+else{
+    document.getElementById("cancel_work").style.display = "none"
+    document.getElementById("cancel_nwork").style.display = "block"
+}
+}
+
+function call_cancel_order() {
+    window.location.href = "{% url 'cancelorder' id %}";
+}
+
+</script>
+{% endblock content %}

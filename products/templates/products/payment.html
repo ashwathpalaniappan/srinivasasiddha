@@ -1,0 +1,67 @@
+{% extends "products/base.html" %}
+{% block content %}
+{% load static %}
+<br><br><br><br><br>
+<center>
+<img class="res-img" src="{% static 'products/images/payment.png' %}">
+<br>
+<button class="general-btn" id="rzp-button1">Make Payment</button>
+<!-- <form action="payment"  method="post">
+    {% csrf_token %}
+    <input class="general-btn" type="submit" value="Make Payment">
+</form> -->
+</center>
+<br><br><br>
+
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+var options = {
+    "key": "{{ api_key }}",
+    "name": "Srinivasa Siddha Stores",
+    "order_id": "{{ order_id }}", 
+    "handler": function (response){
+        payment_id = response.razorpay_payment_id;
+        order_id = response.razorpay_order_id;
+        signature = response.razorpay_signature;
+        val = payment_id + "$" + order_id + "$" + signature
+        window.location.href = "{% url 'payment' 12345 %}".replace(/12345/, val.toString());
+    },
+    "prefill": {
+        "name": "{{ name }}",
+        "email": "{{ email }}",
+        "contact": "{{ phone }}"
+    },
+    "notes": {
+        "address": "Razorpay Corporate Office"
+    },
+    "theme": {
+        "color": "#3399cc"
+    }
+};
+var rzp1 = new Razorpay(options);
+document.getElementById('rzp-button1').onclick = function(e){
+    rzp1.open();
+    e.preventDefault();
+}
+</script>
+
+
+<!-- <form action="payment" method="POST">
+    
+    <script
+        src="https://checkout.razorpay.com/v1/checkout.js"
+        data-key="rzp_live_dHvT6CMZhsH48Z" 
+        data-amount= {{ sub_total }} 
+        data-currency="INR"
+        data-order_id="order_CgmcjRh9ti2lP7"
+        data-buttontext="Make Payment"
+        data-name="Srinivasa Siddha Stores"
+        data-prefill.name= {{ name }}
+        data-prefill.email= {{ email }}
+        data-theme.color="#F37254"
+    ></script>
+    <input type="hidden" custom="Hidden Element" name="hidden">
+</form> -->
+
+{% endblock content %}

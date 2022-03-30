@@ -1,0 +1,37 @@
+{% extends "products/base.html" %}
+{% block content %}
+{% load static %}
+<br><br><br>
+<center>
+<img class="loader" id="loader" src="{% static 'products/images/load.gif' %}" style="display: block;">
+</center>
+<section class="about" id="section" style="display: none;">
+<div class="about-content">
+    <div class="column left">
+        <img src="{{product_item.image_url}}"><br>
+    </div>
+    <div class="column right">
+        <h1>{{product_item.product_name}}</h1>
+        <h4>{{product_item.company}} - {{product_item.category}}</h4>
+        <h4 style="font-weight: bold;">Rs. {{product_item.price}}</h4><br>
+        <p>{{product_item.description}}</p>
+        {% if product_item.item_added == 1 %}
+            <button class="specific-btn"> Item Already Added </button>
+        {% elif product_item.available == 0 %}
+            <button class="specific-btn"> Out Of Stock </button>
+        {% else %}
+            <form action="{{product_item.id}}"  method="post">
+                {% csrf_token %}
+                <input class="general-btn" type="submit" value="Add to Cart">
+            </form>
+        {% endif %}
+    </div>
+</div>
+</section>
+<script>
+window.addEventListener("load",function(){
+document.getElementById("loader").style.display = 'none';
+document.getElementById("section").style.display = 'block';
+})
+</script>
+{% endblock content %}

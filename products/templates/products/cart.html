@@ -1,0 +1,99 @@
+{% extends "products/base.html" %}
+{% block content %}
+{% load static %}
+<center>
+<br><br><br><br><br>
+<table>
+  <tr>
+    <th>Product Name</th>
+    <th>Quantity</th>
+    <th>Price</th>
+    <th>Total</th>
+  </tr>
+  {% for cart_product in cart_items %}
+  <tr>
+    <td>{{ cart_product.product_name }} - {{ cart_product.company }}</td>
+    <td>
+      <button class="plus update-cart" data-action="add" data-product={{ cart_product.id }}>+</button>
+      {{ cart_product.qty }}
+      <button class="minus update-cart" data-action="sub" data-product={{ cart_product.id }}>-</button>
+    </td>
+    <td>{{ cart_product.price }}</td>
+    <td style='text-align: right;'>{{ cart_product.total }}</td>
+    <td style='border: 0px;'><button class="del update-cart" data-action="remove" data-product={{ cart_product.id }}><b>X</b></button></td>
+  </tr>
+  {% endfor %}
+  <tr>
+    <td style='border: 0px;'></td>
+    <td style='border: 0px;'></td>
+    <td style='border: 0px; text-align: right; padding: 2px; padding-right: 8px'>Delivery Charges:</td>
+    <td style='border: 0px; text-align: right; padding: 2px; padding-right: 8px'>{{ delivery }}</td>
+  </tr>
+  <tr>
+    <td style='border: 0px;'></td>
+    <td style='border: 0px;'></td>
+    <td style='border: 0px; text-align: right; padding: 2px; padding-right: 8px; font-weight: bold'>Subtotal:</td>
+    <td style='border: 0px; text-align: right; padding: 2px; padding-right: 8px; font-weight: bold'>{{ sub_total }}</td>
+  </tr>
+  
+</table>
+
+<button style="margin-bottom: 200px;" class="general-btn" onclick="window.location.href = '{% url 'user' %}'">Check Out</button>
+<br><br><br><br><br>
+</center>
+<script>
+
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            // Does this cookie string begin with the name we want?
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+const csrftoken = getCookie('csrftoken');
+
+
+
+
+var updateBtns = document.getElementsByClassName('update-cart')
+for(var i=0; i<updateBtns.length; i++)
+{
+  updateBtns[i].addEventListener('click',function(){
+      var product_id = this.dataset.product
+      var action = this.dataset.action
+      updateUserOrder(product_id,action)
+  })
+}
+
+
+
+
+function updateUserOrder(product_id, action){
+  var url = 'https://srinivasasiddha.herokuapp.com/calculation/'
+  fetch(url, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+    'X-CSRFToken': csrftoken
+  },
+  body: JSON.stringify({'product_id':product_id, 'action':action})
+})
+.then((response) => {
+  return response.json();
+})
+.then((data) => {
+  location.reload();
+})
+}
+</script>
+
+{% endblock content %}
